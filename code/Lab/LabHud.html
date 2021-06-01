@@ -1,4 +1,5 @@
 
+<link rel="stylesheet" href="/styles/base.scss">
 <link rel="stylesheet" href="labhud.scss">
 
 <div>
@@ -7,7 +8,16 @@
 	<pointerevents></pointerevents>
 
 	<div class="panel top right">
-		<button onclick.console="npc_clear">Clear</button>
+
+		<convarbuttongroup convar="host_timescale">
+			<button value="0" icon="pause"></button>
+			<button value="0.1" icon="navigate_next"></button>
+			<button value="1" icon="play_arrow"></button>
+			<button value="5" icon="fast_forward"></button>
+			<button value="10" icon="skip_next"></button>
+		</convarbuttongroup>
+
+		<button onmousedown.console="npc_clear" icon="delete_forever">Clear</button>
 	</div>
 
 </div> 

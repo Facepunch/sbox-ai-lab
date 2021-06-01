@@ -36,11 +36,13 @@ pointerevents
 
 .panel
 {
-	padding: 32px;
-	background-color: rgba( black, 0.8 );
+	padding: 16px;
+	background-color: rgba( black, 0.7 );
 	position: absolute;
-	border-radius: 16px;
+	border-radius: 8px;
 	pointer-events: auto;
+	flex-direction: column;
+	font-family: Roboto;
 
 	&.top
 	{
@@ -55,6 +57,88 @@ pointerevents
 	button
 	{
 		cursor: pointer;
+		color: rgba( white, 0.7 );
+		border: 1.5px solid rgba( white, 0.6 );
+		margin-bottom: 10px;
+		border-radius: 7px;
+		font-weight: bold;
+		text-align: center;
+		justify-content: center;
+		mix-blend-mode: lighten;
+
+		&:last-child
+		{
+			margin-bottom: 0;
+		}
+
+		&:hover
+		{
+			color: rgba( white, 1 );
+			background-color: #0094ff55;
+			color: white;
+		}
+
+		&.active, &:active
+		{
+			background-color: #0094ffaa;
+			color: white;
+		}
+
+		&:hover
+		{
+		}
+	}
+}
+
+button.has-icon.has-label
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px;
+
+	iconpanel
+	{
+		font-size: 22px;
+		flex-grow: 0;
 		color: white;
+	}
+
+	label
+	{
+		font-size: 17px;
+		flex-grow: 1;
+		text-align: left;
+		margin-left: 10px;
+	}
+}
+
+.buttongroup
+{
+	margin-bottom: 10px;
+
+	button
+	{
+		border-radius: 0;
+		border-left: 0;
+		border-right-color: 0;
+		padding: 10px;
+		margin: 0;
+
+		iconpanel
+		{
+			font-size: 20px;
+		}
+
+		&:first-child
+		{
+			border-radius: 5px 0 0 5px;
+			border-left-width: 1.5px;
+		}
+
+		&:last-child
+		{
+			border-radius: 0 5px 5px 0;
+		}
 	}
 }

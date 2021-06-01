@@ -11,13 +11,18 @@ public partial class NpcTest : AnimEntity
 	[ServerCmd( "npc_clear" )]
 	public static void NpcClear( )
 	{
-		Log.Info( "Clear Shit" );
-
-		var npcs = Entity.All.OfType<NpcTest>().ToArray();
-
-		foreach ( var npc in npcs )
+		foreach ( var npc in Entity.All.OfType<NpcTest>().ToArray() )
 			npc.Delete();
 	}
+
+	[ServerCmd( "npc_speed" )]
+	public static void NpcSpeed( int i )
+	{
+		if ( i > 0 ) NpcMoveSpeed = 5;
+		else NpcMoveSpeed = 1;
+	}
+
+	static float NpcMoveSpeed = 1.0f;
 
 	public override void Spawn()
 	{
@@ -25,9 +30,13 @@ public partial class NpcTest : AnimEntity
 
 		SetModel( "models/citizen/citizen.vmdl" );
 		EyePos = Position + Vector3.Up * 64;
+		CollisionGroup = CollisionGroup.Player;
+		SetupPhysicsFromCapsule( PhysicsMotionType.Keyframed, Capsule.FromHeightAndRadius( 72, 16 ) );
 
 		EnableHitboxes = true;
 		Think();
+
+		this.SetMaterialGroup( Rand.Int( 0, 3 ) );
 	}
 
 	bool Walking;
@@ -39,7 +48,7 @@ public partial class NpcTest : AnimEntity
 	[Event.Tick.Server]
 	public void Tick()
 	{
-		if ( TimeSinceThink  > 1.0f )
+		if ( TimeSinceThink > 0.1f )
 		{
 			TimeSinceThink = 0;
 			Think();
@@ -50,15 +59,28 @@ public partial class NpcTest : AnimEntity
 		if ( targetDelta.Length < 5.0f )
 			TimeSinceThink = 1;
 
+	//	DebugOverlay.Line( Position, TargetPosition, 0.1f );
+
 		if ( !Walking )
 		{
 			SetAnimFloat( "wishspeed", 0.0f );
 			return;
 		}
 
-		var direction = (target - Position).Normal;
-		Velocity = direction * Speed * Time.Delta;
-		Position += Velocity;
+		var direction = (target - Position).Normal;	
+		Velocity += direction * Speed * Time.Delta * 10;
+		if ( Velocity.Length > 100 )
+			Velocity = Velocity.Normal * 100;
+
+		Move( Time.Delta );
+
+		var walkVelocity = Velocity.WithZ( 0 );
+		if ( walkVelocity.Length > 1 )
+		{
+			var turnSpeed = walkVelocity.Length.LerpInverse( 0, 100, true );
+			var targetRotation = Rotation.LookAt( walkVelocity.Normal, Vector3.Up );
+			Rotation = Rotation.Lerp( Rotation, targetRotation, turnSpeed * Time.Delta * 10 );
+		}
 
 		SetAnimBool( "b_grounded", true );
 		SetAnimBool( "b_noclip", false );
@@ -69,6 +91,75 @@ public partial class NpcTest : AnimEntity
 		SetAnimFloat( "walkspeed_scale", 2.0f / 190.0f );
 		SetAnimFloat( "runspeed_scale", 2.0f / 320.0f );
 		SetAnimFloat( "duckspeed_scale", 2.0f / 80.0f );
+	}
+
+	protected virtual void Move( float timeDelta )
+	{
+		if ( Velocity.IsNearlyZero() )
+			return;
+
+		var targetPos = Position + Velocity * timeDelta;
+
+		var bbox = new BBox( (Vector3.One * -16).WithZ( 0 ), (Vector3.One * 16).WithZ( 64 ) );
+	//	DebugOverlay.Box( Position, bbox.Mins, bbox.Maxs, Color.Green );
+
+		MoveHelper move = new( Position, Velocity );
+		move.Trace = move.Trace.Ignore( this ).Size( bbox.Mins, bbox.Maxs );
+
+		if ( !Velocity.IsNearlyZero() )
+		{
+			move.TryUnstuck();
+
+			move.TryMove( timeDelta );
+
+			// We didn't get where we wanted to go, lets try stepping up
+			if ( !targetPos.IsNearlyEqual( move.Position, 0.1f ) )
+			{
+				var stepMove = move;
+				stepMove.Velocity = Velocity;
+				stepMove.Position = Position;
+
+				float StepSize = 20.0f;
+				var stepTrace = stepMove.TraceDirection( Vector3.Up * StepSize );
+				if ( !stepTrace.Hit )
+				{
+					stepMove.Position = stepTrace.EndPos;
+					stepMove.TryMove( timeDelta );
+
+					var distBump = targetPos.Distance( move.Position.WithZ( targetPos.z ) );
+					var distStep = targetPos.Distance( stepMove.Position.WithZ( targetPos.z ) );
+
+					if ( distStep < distBump )
+					{
+						stepTrace = stepMove.TraceDirection( Vector3.Down * StepSize );
+						if ( stepTrace.Hit )
+						{
+							stepMove.Position = stepTrace.EndPos;
+							move = stepMove;
+						}
+					}
+				}
+				DebugOverlay.Text( Position, "BUMP", 1.0f );
+			}
+		}
+
+	//	DebugOverlay.Box( Position + Time.Delta * Velocity, bbox.Mins, bbox.Maxs, Color.Blue );
+
+		var tr = move.TraceDirection( Vector3.Down * 2 );
+
+		if ( move.IsFloor( tr ) )
+		{
+			GroundEntity = tr.Entity;
+			move.ApplyFriction( tr.Surface.Friction * 8.0f, timeDelta );
+		}
+		else
+		{
+			GroundEntity = null;
+			move.Velocity += Vector3.Down * 900 * timeDelta;
+		}
+
+		Position = move.Position;
+		Velocity = move.Velocity;
 	}
 
 	void Think()
@@ -88,30 +179,28 @@ public partial class NpcTest : AnimEntity
 		Speed = (distFromPlayer - 50) * 0.5f;
 		if ( Speed > 300 ) Speed = 300;
 
-		Rotation = Rotation.LookAt( (closestPlayer.Position - Position).WithZ(0).Normal, Vector3.Up );
-
 		var path = NavMesh.BuildPath( Position, closestPlayer.Position );
-		if ( path  != null && path.Length > 1 )
-		{
 
+		if ( path == null )
+		{
+			DebugOverlay.Text( EyePos, "Path was NULL", 0.1f );
+			return;
+		}
+
+		var lastPoint  = Position;
+		foreach ( var point in path )
+		{
+			DebugOverlay.Line( lastPoint, point, 0.5f );
+			lastPoint = point;
+		}
+
+		if ( path != null && path.Length > 1 )
+		{
 			TargetPosition = path[1];
 
 			if ( TargetPosition.Distance( Position ) < 10 && path.Length > 2 )
 			{
 				TargetPosition = path[2];
-			}
-
-			var ents = Physics.GetEntitiesInSphere( TargetPosition, 40 );
-			foreach ( var ent in ents )
-			{
-				if ( ent == this ) continue;
-				if ( (Position - ent.Position).Length > 30 ) continue;
-
-				if ( ent is NpcTest )
-				{
-					var diff = (Position - ent.Position).WithZ( 0 ).Normal;
-					TargetPosition += diff * 15 + Vector3.Random.WithZ( 0 );
-				}
 			}
 
 			Walking = true;
