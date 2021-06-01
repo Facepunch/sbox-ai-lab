@@ -15,7 +15,7 @@ namespace Lab
 
 			var ent = Library.Create<Entity>( entity );
 			ent.Position = vector;
-			ent.Rotation = rot;
+			ent.Rotation = Rotation.LookAt( rot.Forward.WithZ( 0 ) );
 		}
 	}
 }

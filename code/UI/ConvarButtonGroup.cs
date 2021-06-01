@@ -15,7 +15,6 @@ namespace Sandbox.UI
 		public ConvarButtonGroup()
 		{
 			AddClass( "group" );
-			AddClass( "buttongroup" );
 		}
 
 		public override void SetProperty( string name, string value )

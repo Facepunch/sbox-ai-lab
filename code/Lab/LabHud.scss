@@ -49,6 +49,16 @@ pointerevents
 		top: 60px;
 	}
 
+	&.left
+	{
+		left: 60px;
+	}
+
+	&.bottom
+	{
+		bottom: 60px;
+	}
+
 	&.right
 	{
 		right: 60px;
@@ -141,4 +151,9 @@ button.has-icon.has-label
 			border-radius: 0 5px 5px 0;
 		}
 	}
+}
+
+.group.list
+{
+	flex-direction: column;
 }

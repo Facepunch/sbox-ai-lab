@@ -9,7 +9,7 @@
 
 	<div class="panel top right">
 
-		<convarbuttongroup convar="host_timescale">
+		<convarbuttongroup convar="host_timescale" class="buttongroup">
 			<button value="0" icon="pause"></button>
 			<button value="0.1" icon="navigate_next"></button>
 			<button value="1" icon="play_arrow"></button>
@@ -18,6 +18,14 @@
 		</convarbuttongroup>
 
 		<button onmousedown.console="npc_clear" icon="delete_forever">Clear</button>
+	</div>
+
+
+	<div class="panel top left">
+		<convarbuttongroup convar="lab_toolmode" class="list">
+			<button value="npc" icon="emoji_people">Create Npc</button>
+			<button value="seek" icon="flag">Mode Seek</button>
+		</convarbuttongroup>
 	</div>
 
 </div> 
