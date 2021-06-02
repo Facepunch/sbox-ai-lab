@@ -60,7 +60,11 @@ public partial class NpcTest : AnimEntity
 
 			if ( !Steer.Output.Finished && GroundEntity != null )
 			{
-				Velocity += Steer.Output.Direction * Speed * Time.Delta * 10;
+				Velocity += Steer.Output.Direction.WithZ( 0 ).Normal * Speed * Time.Delta * 5;
+
+				SetAnimLookAt( "lookat_pos", EyePos + Steer.Output.Direction.WithZ( 0 ) * 10 );
+				SetAnimLookAt( "aimat_pos", EyePos + Steer.Output.Direction.WithZ( 0 ) * 10 );
+				SetAnimFloat( "aimat_weight", 0.5f );
 			}
 		}
 
@@ -74,7 +78,7 @@ public partial class NpcTest : AnimEntity
 		{
 			var turnSpeed = walkVelocity.Length.LerpInverse( 0, 100, true );
 			var targetRotation = Rotation.LookAt( walkVelocity.Normal, Vector3.Up );
-			Rotation = Rotation.Lerp( Rotation, targetRotation, turnSpeed * Time.Delta * 10 );
+			Rotation = Rotation.Lerp( Rotation, targetRotation, turnSpeed * Time.Delta * 3 );
 		}
 
 		SetAnimBool( "b_grounded", true );
@@ -96,7 +100,7 @@ public partial class NpcTest : AnimEntity
 	//	DebugOverlay.Box( Position, bbox.Mins, bbox.Maxs, Color.Green );
 
 		MoveHelper move = new( Position, Velocity );
-		move.MaxStandableAngle = 45;
+		move.MaxStandableAngle = 80;
 		move.Trace = move.Trace.Ignore( this ).Size( bbox.Mins, bbox.Maxs );
 
 		if ( !Velocity.IsNearlyZero() )
@@ -192,15 +196,8 @@ public class NavPath
 			return (Points[0] - position).WithZ(0).Normal;
 		}
 
-		var distance = (Points[1] - Points[0]).Length;
-
-		var deltaToPoint = (Points[1] - position).Normal / MathF.Max( 0.5f, distance / 10.0f );
-		var betweenPoints = (Points[1] - Points[0]).Normal;
-
-	//	DebugOverlay.Line( position + Vector3.Up * 20, position + Vector3.Up * 20 + deltaToPoint * 20, Color.Green );
-	//	DebugOverlay.Line( position + Vector3.Up * 20, position + Vector3.Up * 20 + betweenPoints * 20, Color.Red );
-
-		return (deltaToPoint + betweenPoints).WithZ( 0 ).Normal;
+		var deltaToPoint = (Points[1] - position);
+		return (deltaToPoint).WithZ( 0 ).Normal; 
 	}
 
 	public void DebugDraw( float time )
@@ -243,7 +240,7 @@ public class NavSteer
 
 		Output.Direction = (Output.Direction + Path.GetDirection( position )).Normal;
 
-		DebugOverlay.Line( position + Vector3.Up * 20, position + Vector3.Up * 20 + Output.Direction * 10 );
+		//DebugOverlay.Line( position + Vector3.Up * 20, position + Vector3.Up * 20 + Output.Direction * 10 );
 
 		Path.DebugDraw( 0.1f );
 	}

@@ -22,6 +22,7 @@ namespace Sandbox.UI
 			if ( name == "convar" )
 			{
 				ConvarName = value;
+				UpdateFromConVar();
 			}
 
 			base.SetProperty( name, value );
@@ -34,8 +35,12 @@ namespace Sandbox.UI
 			if ( string.IsNullOrWhiteSpace( ConvarName ) )
 				return;
 
-			var newValue = ConsoleSystem.GetValue( ConvarName, ConvarValue );
-			UpdateValue( newValue );
+			UpdateFromConVar();
+		}
+
+		public virtual void UpdateFromConVar()
+		{
+			UpdateValue( ConsoleSystem.GetValue( ConvarName, ConvarValue ) );
 		}
 
 		void UpdateValue( string value )

@@ -6,16 +6,18 @@ namespace Lab
 {
 	public partial class LabPawn : BaseLabPawn
 	{
-		[UserVar( "lab_toolmode" )]
-		public static string ToolMode { get; set; } = "npc";
+		[ConVar.ClientData( "lab_toolmode" )]
+		public string ToolMode { get; set; } = "npc";
 
 		public override void Simulate( Client cl )
 		{
 			base.Simulate( cl );
 
-			var mode = cl.GetUserString( "lab_toolmode" );
+			//GetClientOwner()?.GetUserString( "lab_toolmode" );  
 
-			ScreenControls( mode );
+			//var mode = cl.GetUserString( "lab_toolmode" );
+
+			ScreenControls( ToolMode );
 		}
 
 		void ScreenControls( string mode )
