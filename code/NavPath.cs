@@ -63,16 +63,22 @@ public class NavPath
 
 	public void DebugDraw( float time )
 	{
+		var draw = Sandbox.Debug.Draw.ForSeconds( time );
+		var lift = Vector3.Up * 10;
+
+		draw.WithColor( Color.White ).Circle( lift + TargetPosition, Vector3.Up, 20.0f );
+
 		int i = 0;
 		var lastPoint = Vector3.Zero;
 		foreach ( var point in Points )
 		{
-			DebugOverlay.Text( point + Vector3.Up * 10, $"{i}", time );
-			DebugOverlay.Line( point, point + Vector3.Up * 10, time, true );
+			//draw.WithColor( Color.Cyan ).Circle( point, Vector3.Up, 10 );
+			//DebugOverlay.Text( point + Vector3.Up * 10, $"{i}", time );
+			//DebugOverlay.Line( point, point + Vector3.Up * 10, time, true );
 
 			if ( i > 0 )
 			{
-				DebugOverlay.Line( lastPoint, point, Color.Cyan, time, true );
+				draw.WithColor( i == 1 ? Color.Green : Color.Cyan ).Arrow( lastPoint + lift, point + lift, Vector3.Up, 5.0f );
 			}
 
 			lastPoint = point;

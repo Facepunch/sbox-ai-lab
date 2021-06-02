@@ -49,7 +49,7 @@ public partial class NpcTest : AnimEntity
 
 		SetBodyGroup( 1, 0 );
 
-		Speed = Rand.Float( 100, 300 );
+		Speed = Rand.Float( 100, 500 );
 	}
 
 	public Sandbox.Debug.Draw Draw => Sandbox.Debug.Draw.Once;
@@ -67,7 +67,8 @@ public partial class NpcTest : AnimEntity
 
 			if ( !Steer.Output.Finished && GroundEntity != null )
 			{
-				Velocity += Steer.Output.Direction.WithZ( 0 ).Normal * Speed * Time.Delta * 5;
+				var vel = Steer.Output.Direction.WithZ( 0 ).Normal * Time.Delta * 1000;
+				Velocity = Velocity.AddClamped( vel, Speed );
 
 				using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
 				{
@@ -80,6 +81,7 @@ public partial class NpcTest : AnimEntity
 				Draw.WithColor( Color.Yellow ).Arrow( p, p + (Velocity.Normal) * 100, Vector3.Up, 10.0f );
 			}
 		}
+
 
 		//if ( Velocity.Length > Speed )
 		//	Velocity = Velocity.Normal * Speed;
@@ -132,12 +134,13 @@ public partial class NpcTest : AnimEntity
 
 		using ( Sandbox.Debug.Profile.Scope( "Ground Checks" ) )
 		{
-			var tr = move.TraceDirection( Vector3.Down * 2 );
+			var tr = move.TraceDirection( Vector3.Down * 5 );
 
 			if ( move.IsFloor( tr ) )
 			{
 				GroundEntity = tr.Entity;
-				move.ApplyFriction( tr.Surface.Friction * 8.0f, timeDelta );
+				move.Position = tr.EndPos;
+				move.ApplyFriction( tr.Surface.Friction * 5.0f, timeDelta );
 			}
 			else
 			{
