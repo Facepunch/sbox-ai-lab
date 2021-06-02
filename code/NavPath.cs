@@ -34,10 +34,15 @@ public class NavPath
 		var delta = Points[1] - Points[0];
 		var deltaNormal = delta.Normal;
 
-		var a = Distance( 0, from );
-		var b = Distance( 1, from );
+		if ( ourdelta.Length < 10 )
+		{
+			Points.RemoveAt( 0 );
+			return;
+		}
 
-		if ( ourdelta.Dot( deltaNormal ) > 0.7 )
+		// If we're in front of this line then
+		// remove it and move on to next one
+		if ( ourdelta.Dot( deltaNormal ) >= 0.5f )
 		{
 			Points.RemoveAt( 0 );
 		}
@@ -57,8 +62,7 @@ public class NavPath
 			return (Points[0] - position).WithZ(0).Normal;
 		}
 
-		var deltaToPoint = (Points[1] - position);
-		return (deltaToPoint).WithZ( 0 ).Normal; 
+		return (Points[1] - position).WithZ( 0 ).Normal; 
 	}
 
 	public void DebugDraw( float time )

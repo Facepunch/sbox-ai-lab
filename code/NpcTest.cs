@@ -28,7 +28,7 @@ public partial class NpcTest : AnimEntity
 		SetModel( "models/citizen/citizen.vmdl" );
 		EyePos = Position + Vector3.Up * 64;
 		CollisionGroup = CollisionGroup.Player;
-		SetupPhysicsFromCapsule( PhysicsMotionType.Keyframed, Capsule.FromHeightAndRadius( 72, 16 ) );
+		SetupPhysicsFromCapsule( PhysicsMotionType.Keyframed, Capsule.FromHeightAndRadius( 72, 8 ) );
 
 		EnableHitboxes = true;
 
@@ -49,7 +49,7 @@ public partial class NpcTest : AnimEntity
 
 		SetBodyGroup( 1, 0 );
 
-		Speed = Rand.Float( 100, 500 );
+		Speed = Rand.Float( 100, 300 );
 	}
 
 	public Sandbox.Debug.Draw Draw => Sandbox.Debug.Draw.Once;
@@ -65,9 +65,11 @@ public partial class NpcTest : AnimEntity
 
 			Steer.Tick( Position );
 
-			if ( !Steer.Output.Finished && GroundEntity != null )
+			if ( !Steer.Output.Finished )
 			{
-				var vel = Steer.Output.Direction.WithZ( 0 ).Normal * Time.Delta * 1000;
+				var speed = GroundEntity != null ? 1000 : 100;
+
+				var vel = Steer.Output.Direction.WithZ( 0 ).Normal * Time.Delta * speed;
 				Velocity = Velocity.AddClamped( vel, Speed );
 
 				using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
@@ -116,15 +118,20 @@ public partial class NpcTest : AnimEntity
 
 	protected virtual void Move( float timeDelta )
 	{
-		var bbox = BBox.FromHeightAndRadius( 64, 10 );
-	//	DebugOverlay.Box( Position, bbox.Mins, bbox.Maxs, Color.Green );
+		var bbox = BBox.FromHeightAndRadius( 64, 4 );
+		DebugOverlay.Box( Position, bbox.Mins, bbox.Maxs, Color.Green );
 
 		MoveHelper move = new( Position, Velocity );
-		move.MaxStandableAngle = 80;
-		move.Trace = move.Trace.Ignore( this ).Size( bbox.Mins, bbox.Maxs );
+		move.MaxStandableAngle = 50;
+		move.Trace = move.Trace.Ignore( this ).Size( bbox );
 
-		if ( !Velocity.IsNearlyZero( 0.01f ) )
+		if ( !Velocity.IsNearlyZero( 0.001f ) )
 		{
+		//	Sandbox.Debug.Draw.Once
+		//						.WithColor( Color.Red )
+		//						.IgnoreDepth()
+		//						.Arrow( Position, Position + Velocity * 2, Vector3.Up, 2.0f );
+
 			using ( Sandbox.Debug.Profile.Scope( "TryUnstuck" ) )
 				move.TryUnstuck();
 
@@ -134,18 +141,24 @@ public partial class NpcTest : AnimEntity
 
 		using ( Sandbox.Debug.Profile.Scope( "Ground Checks" ) )
 		{
-			var tr = move.TraceDirection( Vector3.Down * 5 );
+			var tr = move.TraceDirection( Vector3.Down * 10.0f );
 
 			if ( move.IsFloor( tr ) )
 			{
 				GroundEntity = tr.Entity;
-				move.Position = tr.EndPos;
+
+				if ( !tr.StartedSolid )
+				{
+					move.Position = tr.EndPos;
+				}
+
 				move.ApplyFriction( tr.Surface.Friction * 5.0f, timeDelta );
 			}
 			else
 			{
 				GroundEntity = null;
 				move.Velocity += Vector3.Down * 900 * timeDelta;
+				Sandbox.Debug.Draw.Once.WithColor( Color.Red ).Circle( Position, Vector3.Up, 10.0f );
 			}
 		}
 
