@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using Lab.Tools;
+using Sandbox;
 using Sandbox.UI;
 using Steamworks;
 using System;
@@ -8,31 +9,54 @@ using System.Linq;
 namespace Lab
 {
 
+	public static class IListExt
+	{
+		public static int RemoveAll<T>( this IList<T> list, Predicate<T> match )
+		{
+			int count = 0;
+
+			for ( int i = list.Count - 1; i >= 0; i-- )
+			{
+				if ( match( list[i] ) )
+				{
+					++count;
+					list.RemoveAt( i );
+				}
+			}
+
+			return count;
+		}
+	}
+
 	public class FrustumSelect
 	{
 		Rotation Rotation;
 		Ray StartRay;
 		Ray EndRay;
 
-
 		internal void Init( Ray ray, Rotation rotation )
 		{
 			StartRay = ray;
 			Rotation = rotation;
+			IsDragging = false;
 		}
 
 		internal void Update( Ray ray )
 		{
 			EndRay = ray;
+
+			IsDragging = Vector3.DistanceBetween( StartRay.Project( 100 ), EndRay.Project( 100 ) ) > 5.0f;
 		}
+
+		public bool IsDragging { get; internal set; }
 
 		internal Frustum GetFrustum( float znear = 0, float zfar = float.MaxValue )
 		{
 			var left = Rotation.Left;
 			var up = Rotation.Up;
 
-			var rayA = StartRay.Origin + StartRay.Direction * 100;
-			var rayB = EndRay.Origin + EndRay.Direction * 100;
+			var rayA = StartRay.Project( 100 );
+			var rayB = EndRay.Project( 100 );
 
 			Frustum f = new Frustum();
 
@@ -49,15 +73,15 @@ namespace Lab
 				f.RightPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( -up ) );
 			}
 
-			if ( up.Dot( (rayA - rayB).Normal ) > 0 )
+			if ( up.Dot( (rayA - rayB).Normal ) < 0 )
 			{
-				f.TopPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( left ) );
-				f.BottomPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( -left ) );
+				f.TopPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( -left ) );
+				f.BottomPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( left ) );
 			}
 			else
 			{
-				f.TopPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( left ) );
-				f.BottomPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( -left ) );
+				f.TopPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( -left ) );
+				f.BottomPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( left ) );
 			}
 
 			f.NearPlane = new Plane( (StartRay.Origin + forward * znear), forward );
@@ -72,7 +96,9 @@ namespace Lab
 		[ConVar.ClientData( "lab_toolmode" )]
 		public string ToolMode { get; set; } = "npc";
 
-		FrustumSelect FrustumSelect = new FrustumSelect();
+		public FrustumSelect FrustumSelect = new FrustumSelect();
+
+		Tools.Base CurrentTool;
 
 		[Net]
 		public List<Entity> Selected { get; set; }
@@ -80,6 +106,14 @@ namespace Lab
 		public override void Simulate( Client cl )
 		{
 			base.Simulate( cl );
+
+			var toolName = $"tool_{ToolMode}";
+
+			if ( CurrentTool == null || CurrentTool.ClassInfo.Name != toolName )
+			{
+				CurrentTool = Library.Create<Tools.Base>( toolName );
+				CurrentTool.Owner = this;
+			}
 
 			if ( Input.Pressed( InputButton.Attack1 ) )
 			{
@@ -89,17 +123,36 @@ namespace Lab
 			if ( Input.Down( InputButton.Attack1 ) )
 			{
 				FrustumSelect.Update( new Ray( EyePos, Input.CursorAim ) );
-				Selected.Clear();
 
-				var f = FrustumSelect.GetFrustum();
-
-				foreach ( var ent in Entity.All )
+				if ( FrustumSelect.IsDragging )
 				{
-					if ( ent is not NpcTest ) continue;
-					if ( !f.IsInside( ent.WorldSpaceBounds, true ) ) continue;
+					Selected.Clear();
+					var f = FrustumSelect.GetFrustum();
 
-					Selected.Add( ent );
+					foreach ( var ent in Entity.All )
+					{
+						if ( ent is not NpcTest ) continue;
+						if ( !f.IsInside( ent.WorldSpaceBounds, true ) ) continue;
+
+						Selected.Add( ent );
+					}
 				}
+			}
+
+			Selected.RemoveAll( x => !x.IsValid() );
+
+			var tr = Trace.Ray( EyePos, EyePos + Input.CursorAim * 10000 )
+							.Ignore( this )
+							.Run();
+
+			if ( !FrustumSelect.IsDragging )
+			{
+				CurrentTool?.Tick( tr, Selected );
+			}
+
+			if ( Input.Released( InputButton.Attack1 ) && !FrustumSelect.IsDragging )
+			{
+				CurrentTool?.OnClick( tr, Selected );
 			}
 
 			foreach( var selected in Selected )
@@ -110,82 +163,8 @@ namespace Lab
 					.Circle( selected.Position, Vector3.Up, 50.0f );
 			}
 
-			ScreenControls( ToolMode );
-		}
-
-		void ScreenControls( string mode )
-		{
-			if ( Input.Down( InputButton.Attack2 ) )
-				return;
-
-			var tr = Trace.Ray( EyePos, EyePos + Input.CursorAim * 10000 )
-							.Ignore( this )
-							.Run();
-
-			if ( !tr.Hit )
-				return;
-
-			switch ( mode )
-			{
-				case "npc":
-					{
-						if ( !Input.Pressed( InputButton.Attack1 ) || !IsServer )
-							return;
-
-						new NpcTest
-						{
-							Position = tr.EndPos,
-							Rotation = Rotation.LookAt( EyeRot.Forward.WithZ( 0 ) )
-						};
-
-						return;
-					}
-					
-
-				case "seek":
-					{
-						if ( !Input.Pressed( InputButton.Attack1 ) || !IsServer )
-							return;
-
-						//DebugOverlay.Line( tr.EndPos, tr.EndPos + Vector3.Up * 200, Color.Red, 10.0f );
-
-						foreach ( var npc in Entity.All.OfType<NpcTest>() )
-						{
-							if ( npc.Steer is not NavSteer )
-								npc.Steer = new NavSteer();
-
-							npc.Steer.Target = tr.EndPos;
-						}
-
-						break;
-					}
-
-
-				case "wander":
-					{
-						if ( !Input.Pressed( InputButton.Attack1 ) || !IsServer )
-							return;
-
-						//DebugOverlay.Line( tr.EndPos, tr.EndPos + Vector3.Up * 200, Color.Red, 10.0f );
-
-						foreach ( var npc in Entity.All.OfType<NpcTest>() )
-						{
-							var wander = new Sandbox.Nav.Wander();
-							wander.MinRadius = 500;
-							wander.MaxRadius = 2000;
-							npc.Steer = wander;
-
-							if ( !wander.FindNewTarget( npc.Position ) )
-							{
-								DebugOverlay.Text( npc.EyePos, "COULDN'T FIND A WANDERING POSITION!", 5.0f );
-							}
-						}
-
-						break;
-					}
-			}
-
-
+			if ( !Input.Down( InputButton.Attack1 ) )
+				FrustumSelect.IsDragging = false;
 		}
 	}
 

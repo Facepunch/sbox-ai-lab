@@ -1,0 +1,14 @@
+
+selectionbox
+{
+	border: 3px solid rgba( white, 0.8 );
+	background-color: rgba( white, 0.03 );
+	mix-blend-mode: lighten;
+	position: absolute;
+	display: none;
+
+	&.active
+	{
+		display: flex;
+	}
+}

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class NavPath
 {
+
+
 	public Vector3 TargetPosition;
 	public List<Vector3> Points = new List<Vector3>();
 
@@ -66,24 +68,20 @@ public class NavPath
 		return (Points[1] - position).WithZ( 0 ).Normal; 
 	}
 
-	public void DebugDraw( float time )
+	public void DebugDraw( float time, float opacity = 1.0f )
 	{
 		var draw = Sandbox.Debug.Draw.ForSeconds( time );
-		var lift = Vector3.Up * 10;
+		var lift = Vector3.Up * 2;
 
-		draw.WithColor( Color.White ).Circle( lift + TargetPosition, Vector3.Up, 20.0f );
+		draw.WithColor( Color.White.WithAlpha( opacity ) ).Circle( lift + TargetPosition, Vector3.Up, 20.0f );
 
 		int i = 0;
 		var lastPoint = Vector3.Zero;
 		foreach ( var point in Points )
 		{
-			//draw.WithColor( Color.Cyan ).Circle( point, Vector3.Up, 10 );
-			//DebugOverlay.Text( point + Vector3.Up * 10, $"{i}", time );
-			//DebugOverlay.Line( point, point + Vector3.Up * 10, time, true );
-
 			if ( i > 0 )
 			{
-				draw.WithColor( i == 1 ? Color.Green : Color.Cyan ).Arrow( lastPoint + lift, point + lift, Vector3.Up, 5.0f );
+				draw.WithColor( i == 1 ? Color.Green.WithAlpha( opacity ): Color.Cyan.WithAlpha( opacity ) ).Arrow( lastPoint + lift, point + lift, Vector3.Up, 5.0f );
 			}
 
 			lastPoint = point;

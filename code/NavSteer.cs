@@ -26,9 +26,13 @@
 
 		//DebugOverlay.Line( position + Vector3.Up * 20, position + Vector3.Up * 20 + Output.Direction * 10 );
 
+	}
+
+	public virtual void DebugDrawPath()
+	{
 		using ( Sandbox.Debug.Profile.Scope( "Path Debug Draw" ) )
 		{
-			Path.DebugDraw( 0.1f );
+			Path.DebugDraw( 0.1f, 0.1f );
 		}
 	}
 

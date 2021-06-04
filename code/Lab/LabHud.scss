@@ -64,7 +64,7 @@ pointerevents
 		right: 60px;
 	}
 
-	button
+	.button
 	{
 		cursor: pointer;
 		color: rgba( white, 0.7 );
@@ -100,7 +100,7 @@ pointerevents
 	}
 }
 
-button.has-icon.has-label
+.button.has-icon.has-label
 {
 	display: flex;
 	justify-content: center;

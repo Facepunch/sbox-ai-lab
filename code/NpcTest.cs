@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 [Library( "npc_test", Title = "Npc Test", Spawnable = true )]
 public partial class NpcTest : AnimEntity
 {
+	[ReplicatedVar]
+	public static bool nav_drawpath { get; set; }
+
 	[ServerCmd( "npc_clear" )]
 	public static void NpcClear( )
 	{
@@ -77,22 +80,19 @@ public partial class NpcTest : AnimEntity
 				var vel = Steer.Output.Direction.WithZ( 0 ).Normal * Time.Delta * control;
 				Velocity = Velocity.AddClamped( vel, Speed );
 
-
 				using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
 				{
 					SetAnimLookAt( "lookat_pos", EyePos + Steer.Output.Direction.WithZ( 0 ) * 10 );
 					SetAnimLookAt( "aimat_pos", EyePos + Steer.Output.Direction.WithZ( 0 ) * 10 );
 					SetAnimFloat( "aimat_weight", 0.5f );
 				}
+			}
 
-				var p = Position + Vector3.Up * 5;
-				Draw.WithColor( Color.Yellow ).Arrow( p, p + (Velocity.Normal) * 100, Vector3.Up, 10.0f );
+			if ( nav_drawpath )
+			{
+				Steer.DebugDrawPath();
 			}
 		}
-
-
-		//if ( Velocity.Length > Speed )
-		//	Velocity = Velocity.Normal * Speed;
 
 		using ( Sandbox.Debug.Profile.Scope( "Move" ) )
 		{

@@ -6,6 +6,7 @@
 	
 	<chatbox></chatbox>
 	<pointerevents></pointerevents>
+	<selectionbox></selectionbox>  
 
 	<div class="panel top right">
 
@@ -18,15 +19,16 @@
 		</convarbuttongroup>
 
 		<button onmousedown.console="npc_clear" icon="delete_forever">Clear</button>
+		<ConvarToggleButton on="True" off="False" convar="nav_drawpath" icon="timeline">Draw Paths</ConvarToggleButton> 
 	</div>
 
 
 	<div class="panel top left">
 		<convarbuttongroup convar="lab_toolmode" class="list">
 			<button value="npc" icon="emoji_people">Create Npc</button>
-			<button value="seek" icon="flag">Mode Seek</button> 
-			<button value="wander" icon="sync">Mode Wander</button> 
-			<button value="select" icon="mouse">Select</button> 
+			<button value="seek" icon="flag">Seek</button> 
+			<button value="wander" icon="sync">Wander</button> 
+			<button value="pathvis" icon="visibility">Path Vis</button> 
 		</convarbuttongroup>
 	</div>
 
