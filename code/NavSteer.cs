@@ -1,17 +1,17 @@
 ﻿public class NavSteer
 {
-	NavPath Path;
+	protected NavPath Path { get; private set; }
 
 	public NavSteer()
 	{
 		Path = new NavPath();
 	}
 
-	internal void Tick( Vector3 position )
+	public virtual void Tick( Vector3 currentPosition )
 	{
 		using ( Sandbox.Debug.Profile.Scope( "Update Path" ) )
 		{
-			Path.Update( position, Target );
+			Path.Update( currentPosition, Target ); 
 		}
 
 		Output.Finished = Path.IsEmpty;
@@ -21,7 +21,7 @@
 
 		using ( Sandbox.Debug.Profile.Scope( "Update Direction" ) )
 		{
-			Output.Direction = (Output.Direction + Path.GetDirection( position )).Normal;
+			Output.Direction = (Output.Direction + Path.GetDirection( currentPosition )).Normal;
 		}
 
 		//DebugOverlay.Line( position + Vector3.Up * 20, position + Vector3.Up * 20 + Output.Direction * 10 );

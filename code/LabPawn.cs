@@ -66,6 +66,30 @@ namespace Lab
 
 						break;
 					}
+
+
+				case "wander":
+					{
+						if ( !Input.Pressed( InputButton.Attack1 ) || !IsServer )
+							return;
+
+						//DebugOverlay.Line( tr.EndPos, tr.EndPos + Vector3.Up * 200, Color.Red, 10.0f );
+
+						foreach ( var npc in Entity.All.OfType<NpcTest>() )
+						{
+							var wander = new Sandbox.Nav.Wander();
+							wander.MinRadius = 500;
+							wander.MaxRadius = 2000;
+							npc.Steer = wander;
+
+							if ( !wander.FindNewTarget( npc.Position ) )
+							{
+								DebugOverlay.Text( npc.EyePos, "COULDN'T FIND A WANDERING POSITION!", 5.0f );
+							}
+						}
+
+						break;
+					}
 			}
 
 

@@ -22,7 +22,7 @@ public class NavPath
 		{
 			Points.Clear();
 			NavMesh.BuildPath( from, to, Points );
-			Points.Add( NavMesh.GetClosestPoint( to ) );
+			//Points.Add( NavMesh.GetClosestPoint( to ) );
 		}
 
 		if ( Points.Count <= 1 )
@@ -30,11 +30,12 @@ public class NavPath
 			return;
 		}
 
-		var ourdelta = from - Points[1];
+		var deltaToCurrent = from - Points[0];
+		var deltaToNext = from - Points[1];
 		var delta = Points[1] - Points[0];
 		var deltaNormal = delta.Normal;
 
-		if ( ourdelta.Length < 10 )
+		if ( deltaToNext.WithZ( 0 ).Length < 20 )
 		{
 			Points.RemoveAt( 0 );
 			return;
@@ -42,7 +43,7 @@ public class NavPath
 
 		// If we're in front of this line then
 		// remove it and move on to next one
-		if ( ourdelta.Dot( deltaNormal ) >= 0.5f )
+		if ( deltaToNext.Normal.Dot( deltaNormal ) >= 1.0f )
 		{
 			Points.RemoveAt( 0 );
 		}

@@ -54,10 +54,14 @@ public partial class NpcTest : AnimEntity
 
 	public Sandbox.Debug.Draw Draw => Sandbox.Debug.Draw.Once;
 
+	Vector3 InputVelocity;
+
 	[Event.Tick.Server]
 	public void Tick()
 	{
 		using var _a = Sandbox.Debug.Profile.Scope( "NpcTest::Tick" );
+
+		InputVelocity = 0;
 
 		if ( Steer != null )
 		{
@@ -67,10 +71,12 @@ public partial class NpcTest : AnimEntity
 
 			if ( !Steer.Output.Finished )
 			{
-				var speed = GroundEntity != null ? 1000 : 100;
+				var control = GroundEntity != null ? 200 : 10;
 
-				var vel = Steer.Output.Direction.WithZ( 0 ).Normal * Time.Delta * speed;
+				InputVelocity = Steer.Output.Direction.Normal * Speed;
+				var vel = Steer.Output.Direction.WithZ( 0 ).Normal * Time.Delta * control;
 				Velocity = Velocity.AddClamped( vel, Speed );
+
 
 				using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
 				{
@@ -106,8 +112,8 @@ public partial class NpcTest : AnimEntity
 			SetAnimBool( "b_grounded", true );
 			SetAnimBool( "b_noclip", false );
 			SetAnimBool( "b_swim", false );
-			SetAnimFloat( "forward", Vector3.Dot( Rotation.Forward, Velocity ) );
-			SetAnimFloat( "sideward", Vector3.Dot( Rotation.Right, Velocity ) );
+			SetAnimFloat( "forward", Vector3.Dot( Rotation.Forward, InputVelocity ) );
+			SetAnimFloat( "sideward", Vector3.Dot( Rotation.Right, InputVelocity ) );
 			SetAnimFloat( "wishspeed", Speed );
 			SetAnimFloat( "walkspeed_scale", 2.0f / 10.0f );
 			SetAnimFloat( "runspeed_scale", 2.0f / 320.0f );
@@ -119,7 +125,7 @@ public partial class NpcTest : AnimEntity
 	protected virtual void Move( float timeDelta )
 	{
 		var bbox = BBox.FromHeightAndRadius( 64, 4 );
-		DebugOverlay.Box( Position, bbox.Mins, bbox.Maxs, Color.Green );
+		//DebugOverlay.Box( Position, bbox.Mins, bbox.Maxs, Color.Green );
 
 		MoveHelper move = new( Position, Velocity );
 		move.MaxStandableAngle = 50;
@@ -152,7 +158,9 @@ public partial class NpcTest : AnimEntity
 					move.Position = tr.EndPos;
 				}
 
-				move.ApplyFriction( tr.Surface.Friction * 5.0f, timeDelta );
+				move.Velocity -= InputVelocity;
+				move.ApplyFriction( tr.Surface.Friction * 200.0f, timeDelta );
+				move.Velocity += InputVelocity;
 			}
 			else
 			{
