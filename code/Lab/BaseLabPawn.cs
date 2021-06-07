@@ -9,6 +9,7 @@ namespace Lab
 		{
 			base.Spawn();
 
+			Tags.Add( "player", "pawn" );
 			SetModel( "models/light_arrow.vmdl" );
 		}
 

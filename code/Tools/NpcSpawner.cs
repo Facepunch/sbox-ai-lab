@@ -14,11 +14,14 @@ namespace Lab.Tools
 		{
 			if ( !Host.IsServer ) return;
 
-			new NpcTest
+			var npc = new NpcTest
 			{
 				Position = tr.EndPos,
 				Rotation = Rotation.LookAt( Owner.EyeRot.Backward.WithZ( 0 ) )
 			};
+
+			npc.Tags.Add( "selectable" );
+			npc.Tags.Add( "npc" );
 		}
 	}
 }

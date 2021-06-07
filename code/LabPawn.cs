@@ -127,11 +127,12 @@ namespace Lab
 				if ( FrustumSelect.IsDragging )
 				{
 					Selected.Clear();
+
 					var f = FrustumSelect.GetFrustum();
 
 					foreach ( var ent in Entity.All )
 					{
-						if ( ent is not NpcTest ) continue;
+						if ( !ent.Tags.Has( "selectable" ) ) continue;
 						if ( !f.IsInside( ent.WorldSpaceBounds, true ) ) continue;
 
 						Selected.Add( ent );
