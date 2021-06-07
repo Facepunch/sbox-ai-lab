@@ -1,4 +1,9 @@
-﻿public class NavSteer
+﻿using Sandbox;
+using Steamworks;
+using System;
+using System.Buffers;
+
+public class NavSteer
 {
 	protected NavPath Path { get; private set; }
 
@@ -17,15 +22,46 @@
 		Output.Finished = Path.IsEmpty;
 
 		if ( Output.Finished )
+		{
+			Output.Direction = Vector3.Zero;
 			return;
+		}
 
 		using ( Sandbox.Debug.Profile.Scope( "Update Direction" ) )
 		{
-			Output.Direction = (Output.Direction + Path.GetDirection( currentPosition )).Normal;
+			Output.Direction = Path.GetDirection( currentPosition );
 		}
 
-		//DebugOverlay.Line( position + Vector3.Up * 20, position + Vector3.Up * 20 + Output.Direction * 10 );
+		var avoid = GetAvoidance( currentPosition, 500 );
+		if ( !avoid.IsNearlyZero() )
+		{
+			Output.Direction = (Output.Direction + avoid).Normal;
+		}
+	}
 
+	Vector3 GetAvoidance( Vector3 position, float radius )
+	{
+		var center = position + Output.Direction * radius * 0.5f;
+
+		var objectRadius = 200.0f;
+		Vector3 avoidance = default;
+
+		foreach ( var ent in Physics.GetEntitiesInSphere( center, radius ) )
+		{
+			if ( ent is not NpcTest ) continue;
+			if ( ent.IsWorld ) continue;
+
+			var delta = (position - ent.Position).WithZ( 0 );
+			var closeness = delta.Length;
+			if ( closeness < 0.001f ) continue;
+			var thrust = ((objectRadius - closeness) / objectRadius).Clamp( 0, 1 );
+			if ( thrust <= 0 ) continue;
+
+			//avoidance += delta.Cross( Output.Direction ).Normal * thrust * 2.5f;
+			avoidance += delta.Normal * thrust * thrust;
+		}
+
+		return avoidance;
 	}
 
 	public virtual void DebugDrawPath()
