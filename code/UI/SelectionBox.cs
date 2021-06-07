@@ -35,10 +35,10 @@ namespace Sandbox.UI
 			var topleft = f.GetCorner( 0 ).Value.ToScreen();
 			var bottomright = f.GetCorner( 2 ).Value.ToScreen();
 
-			Style.Left = topleft.x * Screen.Width;
-			Style.Top = topleft.y * Screen.Height;
-			Style.Width = (bottomright.x - topleft.x) * Screen.Width;
-			Style.Height = (bottomright.y - topleft.y) * Screen.Height;
+			Style.Left = topleft.x * Screen.Width * ScaleFromScreen;
+			Style.Top = topleft.y * Screen.Height * ScaleFromScreen;
+			Style.Width = (bottomright.x - topleft.x) * Screen.Width * ScaleFromScreen;
+			Style.Height = (bottomright.y - topleft.y) * Screen.Height * ScaleFromScreen;
 			Style.Dirty();
 		}
 	}
