@@ -59,6 +59,8 @@ public partial class NpcTest : AnimEntity
 
 	Vector3 InputVelocity;
 
+	Vector3 LookDir;
+
 	[Event.Tick.Server]
 	public void Tick()
 	{
@@ -74,18 +76,8 @@ public partial class NpcTest : AnimEntity
 
 			if ( !Steer.Output.Finished )
 			{
-				var control = GroundEntity != null ? 200 : 10;
-
-				InputVelocity = Steer.Output.Direction.Normal * Speed;
-				var vel = Steer.Output.Direction.WithZ( 0 ).Normal * Time.Delta * control;
-				Velocity = Velocity.AddClamped( vel, Speed );
-
-				using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
-				{
-					SetAnimLookAt( "lookat_pos", EyePos + Steer.Output.Direction.WithZ( 0 ) * 10 );
-					SetAnimLookAt( "aimat_pos", EyePos + Steer.Output.Direction.WithZ( 0 ) * 10 );
-					SetAnimFloat( "aimat_weight", 0.5f );
-				}
+				InputVelocity = Steer.Output.Direction.Normal;
+				Velocity = Velocity.AddClamped( InputVelocity * Time.Delta * 500, Speed );
 			}
 
 			if ( nav_drawpath )
@@ -100,11 +92,19 @@ public partial class NpcTest : AnimEntity
 		}
 
 		var walkVelocity = Velocity.WithZ( 0 );
-		if ( walkVelocity.Length > 1 )
+		if ( walkVelocity.Length > 0.5f )
 		{
 			var turnSpeed = walkVelocity.Length.LerpInverse( 0, 100, true );
 			var targetRotation = Rotation.LookAt( walkVelocity.Normal, Vector3.Up );
-			Rotation = Rotation.Lerp( Rotation, targetRotation, turnSpeed * Time.Delta * 3 );
+			Rotation = Rotation.Lerp( Rotation, targetRotation, turnSpeed * Time.Delta * 20.0f );
+		}
+
+		using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
+		{
+			LookDir = Vector3.Lerp( LookDir, InputVelocity.WithZ( 0 ) * 1000, Time.Delta * 1.0f );
+			SetAnimLookAt( "lookat_pos", EyePos + LookDir );
+			SetAnimLookAt( "aimat_pos", EyePos + LookDir );
+			SetAnimFloat( "aimat_weight", 0.5f );
 		}
 
 		using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
@@ -112,12 +112,16 @@ public partial class NpcTest : AnimEntity
 			SetAnimBool( "b_grounded", true );
 			SetAnimBool( "b_noclip", false );
 			SetAnimBool( "b_swim", false );
-			SetAnimFloat( "forward", Vector3.Dot( Rotation.Forward, InputVelocity ) );
-			SetAnimFloat( "sideward", Vector3.Dot( Rotation.Right, InputVelocity ) );
-			SetAnimFloat( "wishspeed", Speed );
-			SetAnimFloat( "walkspeed_scale", 2.0f / 10.0f );
-			SetAnimFloat( "runspeed_scale", 2.0f / 320.0f );
-			SetAnimFloat( "duckspeed_scale", 2.0f / 80.0f );
+
+			var forward = Vector3.Dot( Rotation.Forward, Velocity.Normal );
+			var sideward = Vector3.Dot( Rotation.Right, Velocity.Normal );
+			var angle = MathF.Atan2( sideward, forward ).RadianToDegree().NormalizeDegrees();
+			SetAnimFloat( "move_direction", angle );
+
+			SetAnimFloat( "wishspeed", Velocity.Length * 1.5f );
+			SetAnimFloat( "walkspeed_scale", 1.0f / 10.0f );
+			SetAnimFloat( "runspeed_scale", 1.0f / 320.0f );
+			SetAnimFloat( "duckspeed_scale", 1.0f / 80.0f );
 		}
 		
 	}
@@ -158,9 +162,18 @@ public partial class NpcTest : AnimEntity
 					move.Position = tr.EndPos;
 				}
 
-				move.Velocity -= InputVelocity;
-				move.ApplyFriction( tr.Surface.Friction * 200.0f, timeDelta );
-				move.Velocity += InputVelocity;
+				if ( InputVelocity.Length > 0 )
+				{
+					var movement = move.Velocity.Dot( InputVelocity.Normal );
+					move.Velocity = move.Velocity - movement * InputVelocity.Normal;
+					move.ApplyFriction( tr.Surface.Friction * 10.0f, timeDelta );
+					move.Velocity += movement * InputVelocity.Normal;
+
+				}
+				else
+				{
+					move.ApplyFriction( tr.Surface.Friction * 10.0f, timeDelta );
+				}
 			}
 			else
 			{
