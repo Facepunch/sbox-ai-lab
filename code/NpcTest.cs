@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 [Library( "npc_test", Title = "Npc Test", Spawnable = true )]
 public partial class NpcTest : AnimEntity
 {
-	[ReplicatedVar]
+	[ConVar.Replicated]
 	public static bool nav_drawpath { get; set; }
 
 	[ServerCmd( "npc_clear" )]
