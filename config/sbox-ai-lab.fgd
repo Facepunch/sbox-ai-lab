@@ -1,0 +1,16 @@
+// 
+// NpcTest : Sandbox.AnimEntity 
+// 
+@SolidClass = npc_test : ""
+[
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+]
+
+// 
+// Lab.Game : Sandbox.Game 
+// 
+@PointClass = lab : ""
+[
+	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
+]
+
