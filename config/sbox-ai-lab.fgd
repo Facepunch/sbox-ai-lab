@@ -1,7 +1,7 @@
 // 
 // NpcTest : Sandbox.AnimEntity 
 // 
-@SolidClass = npc_test : ""
+@PointClass = npc_test : ""
 [
 	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
 ]

@@ -117,12 +117,12 @@ namespace Lab
 
 			if ( Input.Pressed( InputButton.Attack1 ) )
 			{
-				FrustumSelect.Init( new Ray( EyePos, Input.CursorAim ), EyeRot );
+				FrustumSelect.Init( Input.Cursor, EyeRot );
 			}
 
 			if ( Input.Down( InputButton.Attack1 ) )
 			{
-				FrustumSelect.Update( new Ray( EyePos, Input.CursorAim ) );
+				FrustumSelect.Update( Input.Cursor );
 
 				if ( FrustumSelect.IsDragging )
 				{
@@ -142,7 +142,7 @@ namespace Lab
 
 			Selected.RemoveAll( x => !x.IsValid() );
 
-			var tr = Trace.Ray( EyePos, EyePos + Input.CursorAim * 10000 )
+			var tr = Trace.Ray( EyePos, EyePos + Input.Cursor.Direction * 10000 )
 							.Ignore( this )
 							.WithAllTags( "world" )
 							.Run();

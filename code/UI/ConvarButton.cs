@@ -82,12 +82,12 @@ namespace Sandbox.UI
 					return;
 
 				_selected?.RemoveClass( "active" );
-				_selected?.OnEvent( "stopactive" );
+				_selected?.CreateEvent( "stopactive" );
 
 				_selected = value;
 
 				_selected?.AddClass( "active" );
-				_selected?.OnEvent( "startactive" );
+				_selected?.CreateEvent( "startactive" );
 			}
 		}
 	}
