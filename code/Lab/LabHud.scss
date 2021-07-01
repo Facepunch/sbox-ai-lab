@@ -43,6 +43,7 @@ pointerevents
 	pointer-events: auto;
 	flex-direction: column;
 	font-family: Roboto;
+	backdrop-filter: blur( 20px ) hue-rotate( 45deg );
 
 	&.top
 	{
