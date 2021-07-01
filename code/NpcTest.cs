@@ -1,6 +1,5 @@
 ﻿using Lab;
 using Sandbox;
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -99,31 +98,12 @@ public partial class NpcTest : AnimEntity
 			Rotation = Rotation.Lerp( Rotation, targetRotation, turnSpeed * Time.Delta * 20.0f );
 		}
 
-		using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
-		{
-			LookDir = Vector3.Lerp( LookDir, InputVelocity.WithZ( 0 ) * 1000, Time.Delta * 1.0f );
-			SetAnimLookAt( "lookat_pos", EyePos + LookDir );
-			SetAnimLookAt( "aimat_pos", EyePos + LookDir );
-			SetAnimFloat( "aimat_weight", 0.5f );
-		}
+		var animHelper = new CitizenAnimationHelper( this );
 
-		using ( Sandbox.Debug.Profile.Scope( "Set Anim Vars" ) )
-		{
-			SetAnimBool( "b_grounded", true );
-			SetAnimBool( "b_noclip", false );
-			SetAnimBool( "b_swim", false );
-
-			var forward = Vector3.Dot( Rotation.Forward, Velocity.Normal );
-			var sideward = Vector3.Dot( Rotation.Right, Velocity.Normal );
-			var angle = MathF.Atan2( sideward, forward ).RadianToDegree().NormalizeDegrees();
-			SetAnimFloat( "move_direction", angle );
-
-			SetAnimFloat( "wishspeed", Velocity.Length * 1.5f );
-			SetAnimFloat( "walkspeed_scale", 1.0f / 10.0f );
-			SetAnimFloat( "runspeed_scale", 1.0f / 320.0f );
-			SetAnimFloat( "duckspeed_scale", 1.0f / 80.0f );
-		}
-		
+		LookDir = Vector3.Lerp( LookDir, InputVelocity.WithZ( 0 ) * 1000, Time.Delta * 100.0f );
+		animHelper.WithLookAt( EyePos + LookDir );
+		animHelper.WithVelocity( Velocity );
+		animHelper.WithWishVelocity( InputVelocity );		
 	}
 
 	protected virtual void Move( float timeDelta )

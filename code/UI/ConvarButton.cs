@@ -66,7 +66,7 @@ namespace Sandbox.UI
 
 			if ( child.Value != null )
 			{
-				child.AddEvent( "onmousedown", () => SetValue( child.Value ) );
+				child.AddEventListener( "onmousedown", () => SetValue( child.Value ) );
 				child.SetClass( "active", string.Equals( child.Value, ConvarValue, StringComparison.OrdinalIgnoreCase ) );
 			}
 		}

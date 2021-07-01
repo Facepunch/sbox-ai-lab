@@ -92,7 +92,7 @@ namespace Sandbox.Debug
 		}
 
 		[Event.Tick]
-		public static void Frame()
+		static void Frame()
 		{
 			if ( timeSince >= 0.5f )
 			{
