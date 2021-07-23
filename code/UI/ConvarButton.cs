@@ -51,7 +51,7 @@ namespace Sandbox.UI
 
 			foreach( var child in Children )
 			{
-				child.SetClass( "active", string.Equals( child.Value, ConvarValue, StringComparison.OrdinalIgnoreCase ) );
+				child.SetClass( "active", string.Equals( child.StringValue, ConvarValue, StringComparison.OrdinalIgnoreCase ) );
 			}
 		}
 
@@ -64,10 +64,10 @@ namespace Sandbox.UI
 		{
 			base.OnChildAdded( child );
 
-			if ( child.Value != null )
+			if ( child.StringValue != null )
 			{
-				child.AddEventListener( "onmousedown", () => SetValue( child.Value ) );
-				child.SetClass( "active", string.Equals( child.Value, ConvarValue, StringComparison.OrdinalIgnoreCase ) );
+				child.AddEventListener( "onmousedown", () => SetValue( child.StringValue ) );
+				child.SetClass( "active", string.Equals( child.StringValue, ConvarValue, StringComparison.OrdinalIgnoreCase ) );
 			}
 		}
 
