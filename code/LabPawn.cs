@@ -81,7 +81,7 @@ namespace Lab
 		Tools.Base CurrentTool;
 
 		[Net]
-		public List<Entity> Selected { get; set; }
+		public IList<Entity> Selected { get; set; }
 
 		public override void Simulate( Client cl )
 		{
