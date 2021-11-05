@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Lab
 {
-	[Library( "lab" )]
 	public partial class Game : Sandbox.Game
 	{
 		public override void Spawn()
