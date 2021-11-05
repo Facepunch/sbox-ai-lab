@@ -60,12 +60,12 @@ namespace Sandbox.UI
 			ConsoleSystem.Run( ConvarName, value );
 		}
 
-		protected override void OnChildAdded( Panel child )
+		protected override void PostTemplateApplied()
 		{
-			base.OnChildAdded( child );
-
-			if ( child.StringValue != null )
+			foreach( var child in Children )
 			{
+				if ( child.StringValue == null ) continue;
+
 				child.AddEventListener( "onmousedown", () => SetValue( child.StringValue ) );
 				child.SetClass( "active", string.Equals( child.StringValue, ConvarValue, StringComparison.OrdinalIgnoreCase ) );
 			}
