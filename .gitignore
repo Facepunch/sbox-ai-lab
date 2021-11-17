@@ -7,3 +7,4 @@ tools_asset_info.bin
 launchSettings.json
 _bakeresourcecache
 tools_thumbnail_cache.bin
+.vs/*
