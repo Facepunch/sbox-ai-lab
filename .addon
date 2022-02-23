@@ -1,8 +1,8 @@
 {
-  "Title": "Sbox Ai Lab",
+  "Title": "AI Lab",
   "Type": "game",
   "Org": "facepunch",
-  "Ident": "sbox-ai-lab",
+  "Ident": "ai_lab",
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
