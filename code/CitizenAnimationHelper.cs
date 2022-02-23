@@ -15,7 +15,7 @@ public struct CitizenAnimationHelper
 		Owner.SetAnimLookAt( "aim_eyes", look );
 		Owner.SetAnimLookAt( "aim_head", look );
 		Owner.SetAnimLookAt( "aim_body", look );
-		Owner.SetAnimFloat( "aimat_weight", 0.5f );
+		Owner.SetAnimParameter( "aimat_weight", 0.5f );
 	}
 
 	public void WithVelocity( Vector3 Velocity )
@@ -26,11 +26,11 @@ public struct CitizenAnimationHelper
 
 		var angle = MathF.Atan2( sideward, forward ).RadianToDegree().NormalizeDegrees();
 
-		Owner.SetAnimFloat( "move_direction", angle );
-		Owner.SetAnimFloat( "move_speed", Velocity.Length );
-		Owner.SetAnimFloat( "move_groundspeed", Velocity.WithZ( 0 ).Length );
-		Owner.SetAnimFloat( "move_y", sideward );
-		Owner.SetAnimFloat( "move_x", forward );
+		Owner.SetAnimParameter( "move_direction", angle );
+		Owner.SetAnimParameter( "move_speed", Velocity.Length );
+		Owner.SetAnimParameter( "move_groundspeed", Velocity.WithZ( 0 ).Length );
+		Owner.SetAnimParameter( "move_y", sideward );
+		Owner.SetAnimParameter( "move_x", forward );
 	}
 
 	public void WithWishVelocity( Vector3 Velocity )
@@ -41,10 +41,10 @@ public struct CitizenAnimationHelper
 
 		var angle = MathF.Atan2( sideward, forward ).RadianToDegree().NormalizeDegrees();
 
-		Owner.SetAnimFloat( "wish_direction", angle );
-		Owner.SetAnimFloat( "wish_speed", Velocity.Length );
-		Owner.SetAnimFloat( "wish_groundspeed", Velocity.WithZ( 0 ).Length );
-		Owner.SetAnimFloat( "wish_y", sideward );
-		Owner.SetAnimFloat( "wish_x", forward );
+		Owner.SetAnimParameter( "wish_direction", angle );
+		Owner.SetAnimParameter( "wish_speed", Velocity.Length );
+		Owner.SetAnimParameter( "wish_groundspeed", Velocity.WithZ( 0 ).Length );
+		Owner.SetAnimParameter( "wish_y", sideward );
+		Owner.SetAnimParameter( "wish_x", forward );
 	}
 }

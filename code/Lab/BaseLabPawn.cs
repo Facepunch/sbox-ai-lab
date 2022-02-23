@@ -18,7 +18,7 @@ namespace Lab
 			base.Simulate( cl );
 
 			Rotation = Input.Rotation;
-			EyeRot = Rotation;
+			EyeRotation = Rotation;
 
 			var maxSpeed = 500;
 			if ( Input.Down( InputButton.Run ) ) maxSpeed = 1000;
@@ -30,7 +30,7 @@ namespace Lab
 
 			Position += Velocity * Time.Delta;
 
-			EyePos = Position;
+			EyePosition = Position;
 
 			if ( IsClient )
 			{
@@ -43,7 +43,7 @@ namespace Lab
 			base.FrameSimulate( cl );
 
 			Rotation = Input.Rotation;
-			EyeRot = Rotation;
+			EyeRotation = Rotation;
 			Position += Velocity * Time.Delta;
 		}
 	}

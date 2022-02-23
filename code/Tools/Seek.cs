@@ -18,7 +18,7 @@ namespace Lab.Tools
 				if ( ent is NpcTest npc )
 				{
 					npc.Steer = new NavSteer();
-					npc.Steer.Target = tr.EndPos;
+					npc.Steer.Target = tr.EndPosition;
 				}
 			}
 		}

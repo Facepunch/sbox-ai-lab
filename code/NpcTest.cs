@@ -28,7 +28,7 @@ public partial class NpcTest : AnimEntity
 		base.Spawn();
 
 		SetModel( "models/citizen/citizen.vmdl" );
-		EyePos = Position + Vector3.Up * 64;
+		EyePosition = Position + Vector3.Up * 64;
 		CollisionGroup = CollisionGroup.Player;
 		SetupPhysicsFromCapsule( PhysicsMotionType.Keyframed, Capsule.FromHeightAndRadius( 72, 8 ) );
 
@@ -101,7 +101,7 @@ public partial class NpcTest : AnimEntity
 		var animHelper = new CitizenAnimationHelper( this );
 
 		LookDir = Vector3.Lerp( LookDir, InputVelocity.WithZ( 0 ) * 1000, Time.Delta * 100.0f );
-		animHelper.WithLookAt( EyePos + LookDir );
+		animHelper.WithLookAt( EyePosition + LookDir );
 		animHelper.WithVelocity( Velocity );
 		animHelper.WithWishVelocity( InputVelocity );		
 	}
@@ -139,7 +139,7 @@ public partial class NpcTest : AnimEntity
 
 				if ( !tr.StartedSolid )
 				{
-					move.Position = tr.EndPos;
+					move.Position = tr.EndPosition;
 				}
 
 				if ( InputVelocity.Length > 0 )

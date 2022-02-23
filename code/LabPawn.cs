@@ -96,7 +96,7 @@ namespace Lab
 
 			if ( Input.Pressed( InputButton.Attack1 ) )
 			{
-				FrustumSelect.Init( Input.Cursor, EyeRot );
+				FrustumSelect.Init( Input.Cursor, EyeRotation );
 			}
 
 			if ( Input.Down( InputButton.Attack1 ) )
@@ -121,7 +121,7 @@ namespace Lab
 
 			Selected.RemoveAll( x => !x.IsValid() );
 
-			var tr = Trace.Ray( EyePos, EyePos + Input.Cursor.Direction * 10000 )
+			var tr = Trace.Ray( EyePosition, EyePosition + Input.Cursor.Direction * 10000 )
 							.Ignore( this )
 							.WithAllTags( "world" )
 							.Run();

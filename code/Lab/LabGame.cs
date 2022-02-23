@@ -43,8 +43,8 @@ namespace Lab
 		/// </summary>
 		public override CameraSetup BuildCamera( CameraSetup camSetup )
 		{
-			camSetup.Rotation = Local.Client.Pawn.EyeRot;
-			camSetup.Position = Local.Client.Pawn.EyePos;
+			camSetup.Rotation = Local.Client.Pawn.EyeRotation;
+			camSetup.Position = Local.Client.Pawn.EyePosition;
 
 			return base.BuildCamera( camSetup );
 		}

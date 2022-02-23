@@ -20,7 +20,7 @@ namespace Lab.Tools
 				if ( ent is NpcTest npc )
 				{
 					var path = new NavPath();
-					path.Update( npc.Position, tr.EndPos );
+					path.Update( npc.Position, tr.EndPosition );
 					path.DebugDraw( Time.Delta );
 				}
 			}

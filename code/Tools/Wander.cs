@@ -24,7 +24,7 @@ namespace Lab.Tools
 
 					if ( !wander.FindNewTarget( npc.Position ) )
 					{
-						DebugOverlay.Text( npc.EyePos, "COULDN'T FIND A WANDERING POSITION!", 5.0f );
+						DebugOverlay.Text( npc.EyePosition, "COULDN'T FIND A WANDERING POSITION!", 5.0f );
 					}
 				}
 			}

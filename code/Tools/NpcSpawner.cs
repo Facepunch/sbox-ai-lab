@@ -15,8 +15,8 @@ namespace Lab.Tools
 
 			var npc = new NpcTest
 			{
-				Position = tr.EndPos,
-				Rotation = Rotation.LookAt( Owner.EyeRot.Backward.WithZ( 0 ) )
+				Position = tr.EndPosition,
+				Rotation = Rotation.LookAt( Owner.EyeRotation.Backward.WithZ( 0 ) )
 			};
 
 			npc.Tags.Add( "selectable" );
