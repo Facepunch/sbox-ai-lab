@@ -1,4 +1,13 @@
 {
-	"sharedassets": "*.*",
-	"ident": "facepunch.ai_lab"
+  "Title": "Sbox Ai Lab",
+  "Type": "game",
+  "Org": "facepunch",
+  "Ident": "sbox-ai-lab",
+  "Schema": 1,
+  "HasAssets": true,
+  "AssetsPath": "",
+  "ResourcePaths": null,
+  "HasCode": true,
+  "CodePath": "code",
+  "RootNamespace": "Sandbox"
 }
