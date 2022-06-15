@@ -22,12 +22,12 @@ public class NavPath
 
 		if ( needsBuild )
 		{
-			var from_fixed = NavMesh.GetClosestPoint( from );
-			var tofixed = NavMesh.GetClosestPoint( to );
+			var fromFixed = NavMesh.GetClosestPoint( from );
+			var toFixed = NavMesh.GetClosestPoint( to );
 
 			Points.Clear();
 			NavMesh.GetClosestPoint( from );
-			NavMesh.BuildPath( from_fixed.Value, tofixed.Value, Points );
+			NavMesh.BuildPath( fromFixed.Value, toFixed.Value, Points );
 			//Points.Add( NavMesh.GetClosestPoint( to ) );
 		}
 
