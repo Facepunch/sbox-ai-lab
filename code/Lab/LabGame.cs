@@ -32,7 +32,7 @@ namespace Lab
 		/// </summary>
 		public override void BuildInput( InputBuilder input )
 		{
-			if ( !input.Down( InputButton.Attack2 ) )
+			if ( !input.Down( InputButton.SecondaryAttack ) )
 				return;
 
 			base.BuildInput( input );

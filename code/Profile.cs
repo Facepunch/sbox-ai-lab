@@ -98,7 +98,7 @@ namespace Sandbox.Debug
 			{
 				timeSince = 0;
 
-				DebugOverlay.ScreenText( 20, Root.GetString(), 0.5f );
+				DebugOverlay.ScreenText(Root.GetString(), 20, 0.5f );
 			}
 
 			Root.Wipe();

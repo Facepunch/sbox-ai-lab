@@ -3,7 +3,7 @@ using Sandbox.UI;
 
 namespace Lab
 {
-	public partial class BaseLabPawn : Sandbox.AnimEntity
+	public partial class BaseLabPawn : Sandbox.AnimatedEntity
 	{
 		public override void Spawn()
 		{
@@ -34,7 +34,7 @@ namespace Lab
 
 			if ( IsClient )
 			{
-				Local.Hud.SetClass( "driving", Input.Down( InputButton.Attack2 ) );
+				Local.Hud.SetClass( "driving", Input.Down( InputButton.SecondaryAttack ) );
 			}
 		}
 

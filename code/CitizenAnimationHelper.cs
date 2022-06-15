@@ -3,9 +3,9 @@ using System;
 
 public struct CitizenAnimationHelper
 {
-	AnimEntity Owner;
+	AnimatedEntity Owner;
 
-	public CitizenAnimationHelper( AnimEntity entity )
+	public CitizenAnimationHelper( AnimatedEntity entity )
 	{
 		Owner = entity;
 	}
