@@ -88,18 +88,18 @@ namespace Lab
 
 			var toolName = $"tool_{ToolMode}";
 
-			if ( CurrentTool == null || CurrentTool.ClassInfo.Name != toolName )
+			if ( CurrentTool == null || CurrentTool.ClassName != toolName )
 			{
-				CurrentTool = Library.Create<Tools.Base>( toolName );
+				CurrentTool = TypeLibrary.Create<Tools.Base>( toolName );
 				CurrentTool.Owner = this;
 			}
 
-			if ( Input.Pressed( InputButton.Attack1 ) )
+			if ( Input.Pressed( InputButton.PrimaryAttack ) )
 			{
 				FrustumSelect.Init( Input.Cursor, EyeRotation );
 			}
 
-			if ( Input.Down( InputButton.Attack1 ) )
+			if ( Input.Down( InputButton.PrimaryAttack ) )
 			{
 				FrustumSelect.Update( Input.Cursor );
 
@@ -131,7 +131,7 @@ namespace Lab
 				CurrentTool?.Tick( tr, Selected );
 			}
 
-			if ( Input.Released( InputButton.Attack1 ) && !FrustumSelect.IsDragging )
+			if ( Input.Released( InputButton.PrimaryAttack ) && !FrustumSelect.IsDragging )
 			{
 				CurrentTool?.OnClick( tr, Selected );
 			}
@@ -144,7 +144,7 @@ namespace Lab
 					.Circle( selected.Position, Vector3.Up, 50.0f );
 			}
 
-			if ( !Input.Down( InputButton.Attack1 ) )
+			if ( !Input.Down( InputButton.PrimaryAttack ) )
 				FrustumSelect.IsDragging = false;
 		}
 	}

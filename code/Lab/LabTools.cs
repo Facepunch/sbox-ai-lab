@@ -5,7 +5,7 @@ namespace Lab
 {
 	public static class LabTools
 	{
-		[ServerCmd( "spawn_at" )]
+		[ConCmd.Server( "spawn_at" )]
 		public static void Spawn( Vector3 vector, Rotation rot, string entity )
 		{
 			var owner = ConsoleSystem.Caller?.Pawn;
@@ -13,7 +13,7 @@ namespace Lab
 			if ( ConsoleSystem.Caller == null )
 				return;
 
-			var ent = Library.Create<Entity>( entity );
+			var ent = TypeLibrary.Create<Entity>( entity );
 			ent.Position = vector;
 			ent.Rotation = Rotation.LookAt( rot.Forward.WithZ( 0 ) );
 		}

@@ -5,13 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-[Library( "npc_test", Title = "Npc Test", Spawnable = true )]
-public partial class NpcTest : AnimEntity
+[Library( "npc_test", Title = "Npc Test")]
+public partial class NpcTest : AnimatedEntity
 {
 	[ConVar.Replicated]
 	public static bool nav_drawpath { get; set; }
 
-	[ServerCmd( "npc_clear" )]
+	[ConCmd.Server( "npc_clear" )]
 	public static void NpcClear( )
 	{
 		foreach ( var npc in Entity.All.OfType<NpcTest>().ToArray() )

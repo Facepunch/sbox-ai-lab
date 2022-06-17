@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Lab.Tools
 {
-	public class Base : LibraryClass
+	public class Base : BaseNetworkable
 	{
 		public Entity Owner { get; set; }
 
