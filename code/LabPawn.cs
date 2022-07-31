@@ -123,7 +123,7 @@ namespace Lab
 
 			var tr = Trace.Ray( EyePosition, EyePosition + Input.Cursor.Direction * 10000 )
 							.Ignore( this )
-							.WithAllTags( "world" )
+							.WorldOnly()
 							.Run();
 
 			if ( !FrustumSelect.IsDragging )
