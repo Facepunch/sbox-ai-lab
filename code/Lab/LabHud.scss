@@ -1,4 +1,14 @@
 
+.labhud {
+	pointer-events: none;
+	border: 0px solid #b6ff0000;
+	transition: all 0.1s ease;
+	cursor: crosshair;
+
+	&.driving {
+		border: 15px solid #b6ff00aa;
+	}
+}
 
 text.title
 {
@@ -14,24 +24,9 @@ text.title
 
 pointerevents
 {
-	pointer-events: visible;
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0;
-	border: 0px solid #b6ff0000;
-	transition: all 0.1s ease;
-	cursor: crosshair;
-}
-
-.driving
-{
-	pointerevents
-	{
-		pointer-events: none;
-		border: 15px solid #b6ff00aa;
-	}
+	pointer-events: all;
+	width: 1px;
+	height: 1px;
 }
 
 .panel
@@ -40,10 +35,10 @@ pointerevents
 	background-color: rgba( black, 0.7 );
 	position: absolute;
 	border-radius: 8px;
-	pointer-events: auto;
 	flex-direction: column;
 	font-family: Roboto;
 	backdrop-filter: blur( 20px ) hue-rotate( 45deg );
+	pointer-events: all;
 
 	&.top
 	{
