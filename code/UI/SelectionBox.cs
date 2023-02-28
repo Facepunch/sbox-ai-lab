@@ -19,7 +19,7 @@ namespace Sandbox.UI
 		{
 			base.Tick();
 
-			if ( Local.Pawn is LabPawn labPawn )
+			if ( Game.LocalPawn is LabPawn labPawn )
 			{
 				Tick( labPawn.FrustumSelect );
 			}

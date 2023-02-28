@@ -1,9 +1,6 @@
-﻿using Lab.Tools;
+﻿
 using Sandbox;
-using Sandbox.UI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Lab
 {
@@ -39,32 +36,32 @@ namespace Lab
 
 			Frustum f = new Frustum();
 
-			var forward = (StartRay.Direction + EndRay.Direction).Normal;
+			var forward = (StartRay.Forward + EndRay.Forward).Normal;
 
 			if ( left.Dot( (rayA - rayB).Normal ) < 0 )
 			{
-				f.LeftPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( up ) );
-				f.RightPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( -up ) );
+				f.LeftPlane = new Plane( EndRay.Position, EndRay.Forward.Cross( up ) );
+				f.RightPlane = new Plane( StartRay.Position, StartRay.Forward.Cross( -up ) );
 			}
 			else
 			{
-				f.LeftPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( up ) );
-				f.RightPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( -up ) );
+				f.LeftPlane = new Plane( StartRay.Position, StartRay.Forward.Cross( up ) );
+				f.RightPlane = new Plane( EndRay.Position, EndRay.Forward.Cross( -up ) );
 			}
 
 			if ( up.Dot( (rayA - rayB).Normal ) < 0 )
 			{
-				f.TopPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( -left ) );
-				f.BottomPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( left ) );
+				f.TopPlane = new Plane( EndRay.Position, EndRay.Forward.Cross( -left ) );
+				f.BottomPlane = new Plane( StartRay.Position, StartRay.Forward.Cross( left ) );
 			}
 			else
 			{
-				f.TopPlane = new Plane( StartRay.Origin, StartRay.Direction.Cross( -left ) );
-				f.BottomPlane = new Plane( EndRay.Origin, EndRay.Direction.Cross( left ) );
+				f.TopPlane = new Plane( StartRay.Position, StartRay.Forward.Cross( -left ) );
+				f.BottomPlane = new Plane( EndRay.Position, EndRay.Forward.Cross( left ) );
 			}
 
-			f.NearPlane = new Plane( (StartRay.Origin + forward * znear), forward );
-			f.FarPlane = new Plane( (StartRay.Origin + forward * zfar), -forward );
+			f.NearPlane = new Plane( (StartRay.Position + forward * znear), forward );
+			f.FarPlane = new Plane( (StartRay.Position + forward * zfar), -forward );
 
 			return f;
 		}
@@ -82,7 +79,7 @@ namespace Lab
 		[Net]
 		public IList<Entity> Selected { get; set; }
 
-		public override void Simulate( Client cl )
+		public override void Simulate( IClient cl )
 		{
 			base.Simulate( cl );
 
@@ -94,14 +91,16 @@ namespace Lab
 				CurrentTool.Owner = this;
 			}
 
+			var cursorRay = new Ray( CursorPosition, CursorForward );
+
 			if ( Input.Pressed( InputButton.PrimaryAttack ) )
 			{
-				FrustumSelect.Init( Input.Cursor, EyeRotation );
+				FrustumSelect.Init( cursorRay, Rotation.From ( ViewAngles ) );
 			}
 
 			if ( Input.Down( InputButton.PrimaryAttack ) )
 			{
-				FrustumSelect.Update( Input.Cursor );
+				FrustumSelect.Update( cursorRay );
 
 				if ( FrustumSelect.IsDragging )
 				{
@@ -119,9 +118,13 @@ namespace Lab
 				}
 			}
 
-			Selected.RemoveAll( x => !x.IsValid() );
+			for( int i = Selected.Count - 1; i>= 0; i-- )
+			{
+				if ( Selected[i].IsValid() ) continue;
+				Selected.RemoveAt( i );
+			}
 
-			var tr = Trace.Ray( EyePosition, EyePosition + Input.Cursor.Direction * 10000 )
+			var tr = Trace.Ray( Position, Position + CursorForward * 10000 )
 							.Ignore( this )
 							.WorldOnly()
 							.Run();

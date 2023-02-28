@@ -11,12 +11,12 @@ namespace Lab.Tools
 	{
 		public override void OnClick( TraceResult tr, IList<Entity> selected )
 		{
-			if ( !Host.IsServer ) return;
+			if ( !Game.IsServer ) return;
 
 			var npc = new NpcTest
 			{
 				Position = tr.EndPosition,
-				Rotation = Rotation.LookAt( Owner.EyeRotation.Backward.WithZ( 0 ) )
+				Rotation = Rotation.LookAt( Owner.Rotation.Backward.WithZ( 0 ) )
 			};
 
 			npc.Tags.Add( "selectable" );

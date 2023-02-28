@@ -1,52 +1,37 @@
 ﻿
 using Sandbox;
-using Sandbox.UI.Construct;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Lab
 {
-	public partial class Game : Sandbox.Game
+	public partial class LabGame : GameManager
 	{
-		public override void Spawn()
-		{
-			base.Spawn();
 
-			new HudEntity();
+		public override void ClientSpawn()
+		{
+			base.ClientSpawn();
+
+			Game.RootPanel = new LabHud();
 		}
 
 		/// <summary>
 		/// Client joined, create them a LabPawn and spawn them
 		/// </summary>
-		public override void ClientJoined( Client client )
+		public override void ClientJoined( IClient client )
 		{
 			base.ClientJoined( client );
 
-			client.Pawn = new LabPawn();
-			MoveToSpawnpoint( client.Pawn );
+			var pawn = new LabPawn();
+			client.Pawn = pawn;
+
+			MoveToSpawnpoint( pawn );
 		}
 
-		/// <summary>
-		/// Don't do any in game input unless we're holding down RMB
-		/// </summary>
-		public override void BuildInput( InputBuilder input )
+		[Event.Client.Frame]
+		public void BuildCamera()
 		{
-			if ( !input.Down( InputButton.SecondaryAttack ) )
-				return;
-
-			base.BuildInput( input );
-		}
-
-		/// <summary>
-		/// Put the camera at the pawn's eye
-		/// </summary>
-		public override CameraSetup BuildCamera( CameraSetup camSetup )
-		{
-			camSetup.Rotation = Local.Client.Pawn.EyeRotation;
-			camSetup.Position = Local.Client.Pawn.EyePosition;
-
-			return base.BuildCamera( camSetup );
+			if ( Game.LocalPawn is not LabPawn p ) return;
+			Camera.Rotation = Rotation.From( p.ViewAngles );
+			Camera.Position = p.Position;
 		}
 
 	}

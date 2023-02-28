@@ -11,6 +11,9 @@ public partial class NpcTest : AnimatedEntity
 	[ConVar.Replicated]
 	public static bool nav_drawpath { get; set; }
 
+
+	public Vector3 EyePosition => Position + Vector3.Up * 64;
+
 	[ConCmd.Server( "npc_clear" )]
 	public static void NpcClear( )
 	{
@@ -28,30 +31,12 @@ public partial class NpcTest : AnimatedEntity
 		base.Spawn();
 
 		SetModel( "models/citizen/citizen.vmdl" );
-		EyePosition = Position + Vector3.Up * 64;
-		CollisionGroup = CollisionGroup.Player;
 		SetupPhysicsFromCapsule( PhysicsMotionType.Keyframed, Capsule.FromHeightAndRadius( 72, 8 ) );
-
-		EnableHitboxes = true;
-
-		this.SetMaterialGroup( Rand.Int( 0, 3 ) );
-
-		new ModelEntity( "models/citizen_clothes/trousers/trousers.smart.vmdl", this );
-		new ModelEntity( "models/citizen_clothes/jacket/labcoat.vmdl", this );
-		new ModelEntity( "models/citizen_clothes/shirt/shirt_longsleeve.scientist.vmdl" , this );
-
-		if ( Rand.Int(3) == 1 )
-		{
-			new ModelEntity( "models/citizen_clothes/hair/hair_femalebun.black.vmdl" , this );
-		}
-		else if ( Rand.Int( 10 ) == 1 )
-		{
-			new ModelEntity( "models/citizen_clothes/hat/hat_hardhat.vmdl" , this );
-		}
-
+		SetMaterialGroup( Game.Random.Int( 0, 3 ) );
 		SetBodyGroup( 1, 0 );
 
-		Speed = Rand.Float( 100, 300 );
+		EnableHitboxes = true;
+		Speed = Game.Random.Float( 100, 300 );
 	}
 
 	public Sandbox.Debug.Draw Draw => Sandbox.Debug.Draw.Once;

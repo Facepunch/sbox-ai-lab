@@ -12,9 +12,10 @@ public struct CitizenAnimationHelper
 
 	public void WithLookAt( Vector3 look )
 	{
-		Owner.SetAnimLookAt( "aim_eyes", look );
-		Owner.SetAnimLookAt( "aim_head", look );
-		Owner.SetAnimLookAt( "aim_body", look );
+		var eyepos = Owner.Position + Vector3.Up * 64;
+		Owner.SetAnimLookAt( "aim_eyes", eyepos, look );
+		Owner.SetAnimLookAt( "aim_head", eyepos, look );
+		Owner.SetAnimLookAt( "aim_body", eyepos, look );
 		Owner.SetAnimParameter( "aimat_weight", 0.5f );
 	}
 

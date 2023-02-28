@@ -1,155 +1,137 @@
-
 .labhud {
-	pointer-events: none;
-	border: 0px solid #b6ff0000;
-	transition: all 0.1s ease;
-	cursor: crosshair;
+    pointer-events: none;
+    border: 0px solid #b6ff0000;
+    transition: all 0.1s ease;
+    cursor: crosshair;
 
-	&.driving {
-		border: 15px solid #b6ff00aa;
-	}
+    &.driving {
+        border: 15px solid #b6ff00aa;
+    }
 }
 
-text.title
-{
-	font-family: Poppins;
-	font-size: 50px;
-	font-weight: 900;
-	color: white;
-	position: absolute;
-	left: 100px;
-	top: 100px;
-	text-shadow: 5px 5px 50px rgba( black, 0.8 );
+text.title {
+    font-family: Poppins;
+    font-size: 50px;
+    font-weight: 900;
+    color: white;
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    text-shadow: 5px 5px 50px rgba( black, 0.8 );
 }
 
-pointerevents
-{
-	pointer-events: all;
-	width: 1px;
-	height: 1px;
+pointerevents {
+    pointer-events: all;
+    width: 1px;
+    height: 1px;
 }
 
-.panel
-{
-	padding: 16px;
-	background-color: rgba( black, 0.7 );
-	position: absolute;
-	border-radius: 8px;
-	flex-direction: column;
-	font-family: Roboto;
-	backdrop-filter: blur( 20px ) hue-rotate( 45deg );
-	pointer-events: all;
+.panel {
+    padding: 16px;
+    background-color: rgba( black, 0.7 );
+    position: absolute;
+    border-radius: 8px;
+    flex-direction: column;
+    font-family: Roboto;
+    backdrop-filter: blur( 20px ) hue-rotate( 45deg );
+    pointer-events: all;
 
-	&.top
-	{
-		top: 60px;
-	}
+    &.top {
+        top: 60px;
+    }
 
-	&.left
-	{
-		left: 60px;
-	}
+    &.left {
+        left: 60px;
+    }
 
-	&.bottom
-	{
-		bottom: 60px;
-	}
+    &.bottom {
+        bottom: 60px;
+    }
 
-	&.right
-	{
-		right: 60px;
-	}
+    &.right {
+        right: 60px;
+    }
 
-	.button
-	{
-		cursor: pointer;
-		color: rgba( white, 0.7 );
-		border: 1.5px solid rgba( white, 0.6 );
-		margin-bottom: 10px;
-		border-radius: 7px;
-		font-weight: bold;
-		text-align: center;
-		justify-content: center;
-		mix-blend-mode: lighten;
+    .button {
+        cursor: pointer;
+        color: rgba( white, 0.7 );
+        border: 1.5px solid rgba( white, 0.6 );
+        margin-bottom: 10px;
+        border-radius: 7px;
+        font-weight: bold;
+        text-align: center;
+        justify-content: center;
+        mix-blend-mode: lighten;
 
-		&:last-child
-		{
-			margin-bottom: 0;
-		}
+        &:last-child {
+            margin-bottom: 0;
+        }
 
-		&:hover
-		{
-			color: rgba( white, 1 );
-			background-color: #0094ff55;
-			color: white;
-		}
+        &:hover {
+            color: rgba( white, 1 );
+            background-color: #0094ff55;
+            color: white;
+        }
 
-		&.active, &:active
-		{
-			background-color: #0094ffaa;
-			color: white;
-		}
+        &.active, &:active {
+            background-color: #0094ffaa;
+            color: white;
+        }
 
-		&:hover
-		{
-		}
-	}
+        &:hover {
+        }
+    }
 }
 
-.button.has-icon.has-label
-{
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 10px;
+.button.has-icon.has-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
 
-	iconpanel
-	{
-		font-size: 22px;
-		flex-grow: 0;
-		color: white;
-	}
+    iconpanel {
+        font-size: 22px;
+        flex-grow: 0;
+        color: white;
+    }
 
-	label
-	{
-		font-size: 17px;
-		flex-grow: 1;
-		text-align: left;
-		margin-left: 10px;
-	}
+    label {
+        font-size: 17px;
+        flex-grow: 1;
+        text-align: left;
+        margin-left: 10px;
+    }
 }
 
-.buttongroup
-{
-	margin-bottom: 10px;
-
-	button
-	{
-		border-radius: 0;
-		border-left: 0;
-		border-right-color: 0;
-		padding: 10px;
-		margin: 0;
-
-		iconpanel
-		{
-			font-size: 20px;
-		}
-
-		&:first-child
-		{
-			border-radius: 5px 0 0 5px;
-			border-left-width: 1.5px;
-		}
-
-		&:last-child
-		{
-			border-radius: 0 5px 5px 0;
-		}
-	}
+iconpanel {
+    font-family: MaterialIcons;
 }
 
-.group.list
-{
-	flex-direction: column;
+.buttongroup {
+    margin-bottom: 10px;
+
+    button {
+        border-radius: 0;
+        border-left: 0;
+        border-right-color: 0;
+        padding: 10px;
+        margin: 0;
+
+        iconpanel {
+            font-size: 20px;
+        }
+
+        &:first-child {
+            border-radius: 5px 0 0 5px;
+            border-left-width: 1.5px;
+        }
+
+        &:last-child {
+            border-radius: 0 5px 5px 0;
+        }
+    }
+}
+
+.group.list {
+    flex-direction: column;
 }

@@ -5,7 +5,7 @@ namespace Sandbox.Debug
 {
 	public struct Draw
 	{
-		public static Draw Once => new Draw( Time.Delta * 1.5f, Host.Color, true );
+		public static Draw Once => new Draw( Time.Delta * 1.5f, Game.Color, true );
 		public static Draw ForSeconds( float seconds ) => Once.WithDuration( seconds );
 
 		public float Duration;
@@ -22,7 +22,7 @@ namespace Sandbox.Debug
 		public Draw( float duration )
 		{
 			Duration = duration;
-			Color = Host.Color;
+			Color = Game.Color;
 			DepthTest = true;
 		}
 

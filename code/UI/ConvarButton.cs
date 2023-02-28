@@ -1,31 +1,18 @@
-﻿using Sandbox.UI.Construct;
+﻿
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using System.Runtime.InteropServices;
 
 namespace Sandbox.UI
 {
-	[Library( "ConvarButtonGroup" )]
 	public class ConvarButtonGroup : Panel
 	{
 		public string ConvarName { get; set; }
 		public string ConvarValue { get; set; }
 
+		bool initialized;
+
 		public ConvarButtonGroup()
 		{
 			AddClass( "group" );
-		}
-
-		public override void SetProperty( string name, string value )
-		{
-			if ( name == "convar" )
-			{
-				ConvarName = value;
-				UpdateFromConVar();
-			}
-
-			base.SetProperty( name, value );
 		}
 
 		public override void Tick()
@@ -34,6 +21,9 @@ namespace Sandbox.UI
 
 			if ( string.IsNullOrWhiteSpace( ConvarName ) )
 				return;
+
+			if ( !initialized )
+				init();
 
 			UpdateFromConVar();
 		}
@@ -60,9 +50,11 @@ namespace Sandbox.UI
 			ConsoleSystem.Run( ConvarName, value );
 		}
 
-		protected override void PostTemplateApplied()
+		private void init()
 		{
-			foreach( var child in Children )
+			initialized = true;
+
+			foreach ( var child in Children )
 			{
 				if ( child.StringValue == null ) continue;
 

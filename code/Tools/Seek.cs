@@ -11,7 +11,7 @@ namespace Lab.Tools
 	{
 		public override void OnClick( TraceResult tr, IList<Entity> selected )
 		{
-			if ( !Host.IsServer ) return;
+			if ( !Game.IsServer ) return;
 
 			foreach ( var ent in selected )
 			{
