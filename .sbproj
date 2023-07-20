@@ -7,9 +7,12 @@
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
-  "ResourcePaths": null,
+  "Resources": null,
+  "MenuResources": null,
   "HasCode": true,
   "CodePath": "code",
+  "PackageReferences": [],
+  "EditorReferences": null,
   "Metadata": {
     "MaxPlayers": 0,
     "MinPlayers": 0,
@@ -20,6 +23,8 @@
     ],
     "RankType": 0,
     "PerMapRanking": false,
-    "LeaderboardType": 0
+    "LeaderboardType": 0,
+    "TickRate": 50,
+    "CsProjName": ""
   }
 }

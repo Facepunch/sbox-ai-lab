@@ -12,6 +12,7 @@ namespace Lab
 		public Vector3 CursorForward { get; set; }
 		[ClientInput] 
 		public Vector3 InputDirection { get; set; }
+
 		[ClientInput] 
 		public Angles ViewAngles { get; set; }
 
@@ -28,7 +29,7 @@ namespace Lab
 			base.Simulate( cl );
 
 			var maxSpeed = 500;
-			if ( Input.Down( InputButton.Run ) ) maxSpeed = 1000;
+			if ( Input.Down( "run" ) ) maxSpeed = 1000;
 
 			Velocity += Rotation.From( ViewAngles ) * new Vector3( InputDirection.x, InputDirection.y, InputDirection.z ) * maxSpeed * 5 * Time.Delta;
 			if ( Velocity.Length > maxSpeed ) Velocity = Velocity.Normal * maxSpeed;
@@ -38,7 +39,9 @@ namespace Lab
 
 			if ( Game.IsClient )
 			{
-				Game.RootPanel.SetClass( "driving", Input.Down( InputButton.SecondaryAttack ) );
+				Game.RootPanel.ButtonInput = Sandbox.UI.PanelInputType.Game;
+				Game.RootPanel.SetMouseCapture( Input.Down( "attack2" ) );
+				Game.RootPanel.SetClass( "driving", Input.Down( "attack2" ) );
 			}
 		}
 
@@ -50,12 +53,12 @@ namespace Lab
 			CursorPosition = Camera.Position;
 			CursorForward = Screen.GetDirection( Mouse.Position );
 
-			if ( !Input.Down( InputButton.SecondaryAttack ) )
+			if ( !Input.Down( "attack2" ) )
 				return;
 
 			var look = Input.AnalogLook;
 
-			if ( ViewAngles.pitch > 90f || ViewAngles.pitch < -90f )
+			if ( ViewAngles.pitch > 89f || ViewAngles.pitch < -89f )
 			{
 				look = look.WithYaw( look.yaw * -1f );
 			}
@@ -65,6 +68,7 @@ namespace Lab
 			viewAngles.pitch = viewAngles.pitch.Clamp( -89f, 89f );
 			viewAngles.roll = 0f;
 			ViewAngles = viewAngles.Normal;
+
 		}
 
 		public override void FrameSimulate( IClient cl )
@@ -72,6 +76,7 @@ namespace Lab
 			base.FrameSimulate( cl );
 
 			Position += Velocity * Time.Delta;
+			Rotation = ViewAngles.ToRotation();
 		}
 	}
 

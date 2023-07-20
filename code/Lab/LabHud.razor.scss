@@ -1,15 +1,18 @@
-.labhud {
-    pointer-events: none;
+.labhud
+{
+    pointer-events: all;
     border: 0px solid #b6ff0000;
     transition: all 0.1s ease;
     cursor: crosshair;
 
-    &.driving {
+    &.driving
+    {
         border: 15px solid #b6ff00aa;
     }
 }
 
-text.title {
+text.title
+{
     font-family: Poppins;
     font-size: 50px;
     font-weight: 900;
@@ -20,13 +23,8 @@ text.title {
     text-shadow: 5px 5px 50px rgba( black, 0.8 );
 }
 
-pointerevents {
-    pointer-events: all;
-    width: 1px;
-    height: 1px;
-}
-
-.panel {
+.panel
+{
     padding: 16px;
     background-color: rgba( black, 0.7 );
     position: absolute;
@@ -34,28 +32,33 @@ pointerevents {
     flex-direction: column;
     font-family: Roboto;
     backdrop-filter: blur( 20px ) hue-rotate( 45deg );
-    pointer-events: all;
 
-    &.top {
+    &.top
+    {
         top: 60px;
     }
 
-    &.left {
+    &.left
+    {
         left: 60px;
     }
 
-    &.bottom {
+    &.bottom
+    {
         bottom: 60px;
     }
 
-    &.right {
+    &.right
+    {
         right: 60px;
     }
 
-    .button {
+    .button
+    {
         cursor: pointer;
         color: rgba( white, 0.7 );
         border: 1.5px solid rgba( white, 0.6 );
+        padding: 10px 20px;
         margin-bottom: 10px;
         border-radius: 7px;
         font-weight: bold;
@@ -63,39 +66,46 @@ pointerevents {
         justify-content: center;
         mix-blend-mode: lighten;
 
-        &:last-child {
+        &:last-child
+        {
             margin-bottom: 0;
         }
 
-        &:hover {
+        &:hover
+        {
             color: rgba( white, 1 );
             background-color: #0094ff55;
             color: white;
         }
 
-        &.active, &:active {
+        &.active, &:active
+        {
             background-color: #0094ffaa;
             color: white;
         }
 
-        &:hover {
+        &:hover
+        {
         }
     }
 }
 
-.button.has-icon.has-label {
+.button.has-icon.has-label
+{
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px;
 
-    iconpanel {
+    iconpanel
+    {
         font-size: 22px;
         flex-grow: 0;
         color: white;
     }
 
-    label {
+    label
+    {
         font-size: 17px;
         flex-grow: 1;
         text-align: left;
@@ -103,35 +113,41 @@ pointerevents {
     }
 }
 
-iconpanel {
+iconpanel
+{
     font-family: MaterialIcons;
 }
 
-.buttongroup {
+.panel .buttongroup
+{
     margin-bottom: 10px;
 
-    button {
-        border-radius: 0;
-        border-left: 0;
-        border-right-color: 0;
+    > button
+    {
+        border-radius: 0px;
+        border-left: 0px;
         padding: 10px;
-        margin: 0;
+        margin-bottom: 0px;
 
-        iconpanel {
+        iconpanel
+        {
             font-size: 20px;
         }
 
-        &:first-child {
+        &:first-child
+        {
             border-radius: 5px 0 0 5px;
-            border-left-width: 1.5px;
+            border-left: 1px;
         }
 
-        &:last-child {
+        &:last-child
+        {
             border-radius: 0 5px 5px 0;
         }
     }
 }
 
-.group.list {
+.group.list
+{
     flex-direction: column;
 }

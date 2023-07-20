@@ -26,7 +26,7 @@ namespace Lab
 			MoveToSpawnpoint( pawn );
 		}
 
-		[Event.Client.Frame]
+		[GameEvent.Client.Frame]
 		public void BuildCamera()
 		{
 			if ( Game.LocalPawn is not LabPawn p ) return;
